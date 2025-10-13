@@ -23,4 +23,11 @@ evaluate functions, for example: (Num n) → n; or (Neg e) → - (eval e) etc.
 
 # October 13, 10:13 AM
 
-In this session i plan to build a skeleton for my future program.
+In this session i plan to build a skeleton for my future program.  
+
+## 11:03 AM
+
+Finished core structure. Now i can see more clearly the way i need to implement this project. i will have five core funcions: 
+tokenizer, parse-expr, eval-expr, process-line, run-loop. The tokenizer will generate 'PLUS | 'MUL | 'DIV | 'NEG | '(NUM n) | '(REF k) 
+tokens, then parser will combine those into nodes. For example, negation requires 1 element, so it will parse one, summation requires 2
+elemenents and so on. Parsed data will be passed to evaluator that maps AST to corresponding racket function.
