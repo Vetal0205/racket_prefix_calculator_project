@@ -20,3 +20,7 @@ I also need a loop function that will run all other function (only if run in int
 evaluating, printing. The tokenizer will read user input and generate list of "tokens" to pass it down to parser. The parser will 
 accept input from tokenizer and decide which operation to do, for example '(NUM n) → (Num n). The last will be evaluator, it will actually
 evaluate functions, for example: (Num n) → n; or (Neg e) → - (eval e) etc.
+
+# October 13, 10:13 AM
+
+In this session i plan to build a skeleton for my future program.
