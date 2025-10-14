@@ -31,3 +31,9 @@ Finished core structure. Now i can see more clearly the way i need to implement 
 tokenizer, parse-expr, eval-expr, process-line, run-loop. The tokenizer will generate 'PLUS | 'MUL | 'DIV | 'NEG | '(NUM n) | '(REF k) 
 tokens, then parser will combine those into nodes. For example, negation requires 1 element, so it will parse one, summation requires 2
 elemenents and so on. Parsed data will be passed to evaluator that maps AST to corresponding racket function.
+
+# October 14, 6:11 PM
+
+Today i plan to implement run-loop function that will be used for intercative user experience. To do so i will also need prompt? function
+which is provided by professor. The run-loop function will represent imperative shell that handles communication with user through console
+prompts. The information it receives from console will be passed to process-line function, where it will be processed in next sessions.
