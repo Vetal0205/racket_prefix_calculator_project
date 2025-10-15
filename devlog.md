@@ -37,3 +37,14 @@ elemenents and so on. Parsed data will be passed to evaluator that maps AST to c
 Today i plan to implement run-loop function that will be used for intercative user experience. To do so i will also need prompt? function
 which is provided by professor. The run-loop function will represent imperative shell that handles communication with user through console
 prompts. The information it receives from console will be passed to process-line function, where it will be processed in next sessions.
+
+## 8:27 PM
+
+Finished the run-loop function and updated the module+ main function to determine which function runs based on incoming options. 
+Running racket main.rkt starts interactive mode; running racket main.rkt -b (or --batch) outputs error unimpl for now. I am still 
+considering whether to do this check in main or in run-loop. On one hand, it gives top-level control; on the other, 
+it may produce duplicate code.
+
+The run-loop function now reads user input and distinguishes commands: quit (exit); p (print history—currently via a simple display 
+function; later this will be replaced with a separate function that returns a list of pairs hist_id:value); and, in the final case, 
+it passes the input line to process-line (currently unimplemented).
