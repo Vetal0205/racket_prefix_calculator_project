@@ -1,7 +1,7 @@
 #lang racket
 
 ;; Export functions for outer modules
-(provide tokenizer parse-expr eval-expr process-line)
+;(provide tokenizer parse-expr eval-expr process-line)
 
 ;; AST node types
 (struct Num (n)  #:transparent)   ; number literal
@@ -23,9 +23,30 @@
 (define (eval-expr ast hist) (error "unimp"))
 
 ;; will do all heavy stuff tokenize→parse→eval→print→update history
-(define (process-line s hist) (error "unimp"))
+(define (process-line s hist) (if s (cons s hist) #f)) ;; temporary
+
+(define prompt?
+   (let [(args (current-command-line-arguments))]
+     (cond
+       [(= (vector-length args) 0) #t]
+       [(string=? (vector-ref args 0) "-b") #f]
+       [(string=? (vector-ref args 0) "--batch") #f]
+       [else #t])))
 
 ;; Only for interactive mode
-(define (run-loop hist) (error "unimp"))
+(define (run-loop hist)
+  (begin
+    (let loop ([h hist])
+    (display ">>> ") (flush-output)
+    (let ([line (read-line)])
+      (cond
+        [(eof-object? line) (displayln "Error: invalid input")]
+        [(string=? line "quit") (exit 0)]
+        [(string=? line "p") (displayln h) (loop h)] ;; temporary solution
+        [else (loop (process-line line h))])
+      ))))
+
 (module+ main
-  (run-loop '()))
+  (displayln "Ente an expression or command: ")
+  (when prompt? (run-loop '()))
+  (error "unimpl"))
