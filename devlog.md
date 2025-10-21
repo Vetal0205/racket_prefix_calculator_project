@@ -67,3 +67,9 @@ Implemented process-line function but no error handling yet. Proceed to tokenize
 ## 9:26 PM
 
 I might want to start with helper functions for tokenizer.
+
+## 10:08 PM
+
+Created helpers for tokenizer: digit?, space?, plus?, minus?, mul? div? ref? (just compares incoming string); make-operator, make-number 
+(first compares incoming string to acceptable operators: 'Add, 'Neg, 'Mul, 'Div)(second produces a number 'Num n). Added all 
+condition clauses for tokenizer, but now i have troubles implementing tokenizing of 'Ref $n ast.   
