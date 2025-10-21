@@ -82,3 +82,10 @@ one to return digits right after $, and the second one to return all but those d
 ## 11:02 PM
 
 I will make code cleaner if i move this logic from parse-line to separate helper function parse-ref.
+
+## 11:35 PM
+
+Finised tokenizer function in its fullest. Error handling, however, is subject to change; i might write custom exception structs.
+Now this function produces tokens to be passed to the parser (next session):
+ (tokenizer (string->list "+*2$1+$2"))
+'(Add Mul (Num 2) (Ref 1) Add (Ref 2))
