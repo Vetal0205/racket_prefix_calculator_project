@@ -48,3 +48,8 @@ it may produce duplicate code.
 The run-loop function now reads user input and distinguishes commands: quit (exit); p (print history—currently via a simple display 
 function; later this will be replaced with a separate function that returns a list of pairs hist_id:value); and, in the final case, 
 it passes the input line to process-line (currently unimplemented).
+
+# October 20, 8:00 PM
+
+Professor helped me understand how batch option should really work. I need to prompt user each time for a new expression if not batch, and 
+no prompt at all if batch option is set. Fixing.
