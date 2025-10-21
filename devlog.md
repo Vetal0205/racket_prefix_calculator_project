@@ -73,3 +73,8 @@ I might want to start with helper functions for tokenizer.
 Created helpers for tokenizer: digit?, space?, plus?, minus?, mul? div? ref? (just compares incoming string); make-operator, make-number 
 (first compares incoming string to acceptable operators: 'Add, 'Neg, 'Mul, 'Div)(second produces a number 'Num n). Added all 
 condition clauses for tokenizer, but now i have troubles implementing tokenizing of 'Ref $n ast.   
+
+## 10:58 PM
+
+It appears i can not reuse make-number function here, i need two more helper functions that will take line in current state and run two loops
+one to return digits right after $, and the second one to return all but those digits (remaining tail)
