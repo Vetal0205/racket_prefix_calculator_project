@@ -60,6 +60,10 @@ Starting to implement process-line function. It should take raw string as input 
 to evaluator. if successful add result to "hist" field. Basically, all buisiness logic is gathered here. Still trying to figure out how 
 to write error checking here.
 
-## 8:52 PM
+## 9:07 PM
 
-Encontered a problem. I need to return updated history and 
+Implemented process-line function but no error handling yet. Proceed to tokenizer function.
+
+## 9:26 PM
+
+I might want to start with helper functions for tokenizer.
