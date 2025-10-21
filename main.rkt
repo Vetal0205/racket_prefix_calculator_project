@@ -25,8 +25,8 @@
 ;; will do all heavy stuff tokenize→parse→eval→print→update history
 (define (process-line line hist)
   (let* ([tokens (tokenizer line)]
-         [ast (parser-expr tokens)]
-         [value (eval-expr parsed_list hist)])
+         [ast (parse-expr tokens)]
+         [value (eval-expr ast hist)])
     (cons value hist))) 
 
 (define prompt?
