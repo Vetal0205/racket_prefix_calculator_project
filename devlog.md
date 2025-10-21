@@ -78,3 +78,7 @@ condition clauses for tokenizer, but now i have troubles implementing tokenizing
 
 It appears i can not reuse make-number function here, i need two more helper functions that will take line in current state and run two loops
 one to return digits right after $, and the second one to return all but those digits (remaining tail)
+
+## 11:02 PM
+
+I will make code cleaner if i move this logic from parse-line to separate helper function parse-ref.
