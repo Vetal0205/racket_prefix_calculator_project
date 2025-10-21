@@ -23,7 +23,11 @@
 (define (eval-expr ast hist) (error "unimp"))
 
 ;; will do all heavy stuff tokenize→parse→eval→print→update history
-(define (process-line s hist) (error "unimp")) ;; temporary
+(define (process-line line hist)
+  (let* ([tokens (tokenizer line)]
+         [ast (parser-expr tokens)]
+         [value (eval-expr parsed_list hist)])
+    (cons value hist))) 
 
 (define prompt?
    (let [(args (current-command-line-arguments))]
