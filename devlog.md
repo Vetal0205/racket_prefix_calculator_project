@@ -54,8 +54,12 @@ it passes the input line to process-line (currently unimplemented).
 Professor helped me understand how batch option should really work. I need to prompt user each time for a new expression if not batch, and 
 no prompt at all if batch option is set. Fixing.
 
-## 8:29 PM
+## 8:32 PM
 
 Starting to implement process-line function. It should take raw string as input "line field" and pass it down to the tokenizer, after that
 to evaluator. if successful add result to "hist" field. Basically, all buisiness logic is gathered here. Still trying to figure out how 
 to write error checking here.
+
+## 8:52 PM
+
+Encontered a problem. I need to return updated history and 
