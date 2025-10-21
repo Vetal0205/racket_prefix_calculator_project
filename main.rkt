@@ -23,7 +23,7 @@
 (define (eval-expr ast hist) (error "unimp"))
 
 ;; will do all heavy stuff tokenize→parse→eval→print→update history
-(define (process-line s hist) (if s (cons s hist) #f)) ;; temporary
+(define (process-line s hist) (error "unimp")) ;; temporary
 
 (define prompt?
    (let [(args (current-command-line-arguments))]
@@ -37,7 +37,7 @@
 (define (run-loop hist)
   (begin
     (let loop ([h hist])
-    (display ">>> ") (flush-output)
+    (when prompt? (display "> ") (flush-output))
     (let ([line (read-line)])
       (cond
         [(eof-object? line) (displayln "Error: invalid input")]
@@ -47,6 +47,8 @@
       ))))
 
 (module+ main
-  (displayln "Ente an expression or command: ")
-  (when prompt? (run-loop '()))
-  (error "unimpl"))
+  (when prompt?
+    (displayln "Ente an expression or command: "))
+  (run-loop '()))
+
+
