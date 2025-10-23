@@ -81,7 +81,7 @@ one to return digits right after $, and the second one to return all but those d
 
 ## 11:02 PM
 
-I will make code cleaner if i move this logic from parse-line to separate helper function parse-ref.
+I will make code cleaner if i move this logic from process-line to separate helper function parse-ref.
 
 ## 11:35 PM
 
@@ -89,3 +89,9 @@ Finised tokenizer function in its fullest. Error handling, however, is subject t
 Now this function produces tokens to be passed to the parser (next session):
  (tokenizer (string->list "+*2$1+$2"))
 '(Add Mul (Num 2) (Ref 1) Add (Ref 2))
+
+# October 22, 8:20 PM
+
+For this session i plan to implement pare-expr in its fullest. I am still not sure how exactly to implement it because recently i was 
+pointed to the fact that parser use parse trees for evaluation. Now i am confused, i thought racket, as functional language, would take this
+part of me because of the way functions are applied.  
