@@ -91,10 +91,67 @@
       [else (error "unknown character" (car ln))])))
 
 ;; Builds data nodes, groups them depending on op
-(define (parse-expr toks) (error "unimp"))
+(define (parse-expr toks)
+  (let parse ([ts toks])
+    (cond
+      [(null? ts)
+       (error "Invalid Expression")]
+
+      ;; literal number
+      ;; Represented by a list like '(Num n)
+      [(and (pair? (car ts))
+            (eq? (caar ts) 'Num))
+       (values (Num (cadar ts)) (cdr ts))]
+
+      ;; history reference
+      ;; Represented by a list like '(Ref n)
+      [(and (pair? (car ts))
+            (eq? (caar ts) 'Ref))
+       (values (Ref (cadar ts)) (cdr ts))]
+
+      ;; Unary negate
+      ;; Represented by 'Neg followed by a '(Num n)
+      ;; We run another parse call to search for Neg's "argument"
+      [(eq? (car ts) 'Neg)
+       (let-values ([(val rest1) (parse (cdr ts))])
+         (values (Neg val) rest1))]
+
+      ;; binary operators
+
+      ;; Summation
+      ;; Represented by 'Add key followed by two '(Num n) with optional 'Neg before each
+      ;; We run another parse call to search for Add's "arguments", left and right
+      [(eq? (car ts) 'Add)
+       (let*-values ([(left rest1) (parse (cdr ts))]
+                    [(right rest2) (parse rest1)])
+         (values (Add left right) rest2))]
+      ;; Multiplication
+      ;; Represented by 'Mul key followed by two '(Num n) with optional 'Neg before each
+      ;; We run another parse call to search for Mul's "arguments", left and right
+      [(eq? (car ts) 'Mul)
+       (let*-values ([(left rest1) (parse (cdr ts))]
+                    [(right rest2) (parse rest1)])
+         (values (Mul left right) rest2))]
+      ;; Division
+      ;; Represented by 'Div key followed by two '(Num n) with optional 'Neg before each
+      ;; We run another parse call to search for Div's "arguments", left and right
+      [(eq? (car ts) 'Div)
+       (let*-values ([(left rest1) (parse (cdr ts))]
+                    [(right rest2) (parse rest1)])
+         (values (Div left right) rest2))]
+
+      [else (error "Unknown token" (car ts))])))
+
+;; wrapper, checks for exrtra tokens
+(define (parse-top toks)
+  (let-values ([(ast rest) (parse-expr toks)])
+    (if (null? rest)
+        ast
+        (error "Extra tokens"))))
 
 ;; Evaluates epxpression written as AST
 (define (eval-expr ast hist) (error "unimp"))
+
 
 ;; will do all heavy stuff tokenize→parse→eval→print→update history
 (define (process-line line hist)
