@@ -92,7 +92,7 @@ Now this function produces tokens to be passed to the parser (next session):
 
 # October 22, 8:20 PM
 
-For this session i plan to implement pare-expr in its fullest. I am still not sure how exactly to implement it because recently i was 
+For this session i plan to implement parse-expr in its fullest. I am still not sure how exactly to implement it because recently i was 
 pointed to the fact that parser use parse trees for evaluation. Now i am confused, i thought racket, as functional language, would take this
 part of me because of the way functions are applied.  
 
@@ -104,3 +104,12 @@ to search for its left and right "argument". So when i find one of those, i need
 not be a problem if we have something like '(Add Mul (Num 2) (Ref 1) Add (Ref 2) (Num 1)), two operators in the row, because we will simply
 run another recursion for next operator--'Mul. After last recursive call it will return to the first operator 'Add, forming nice, structured
 format. 
+
+## 9:55 PM
+
+I finished implementing parse-expr function. Now when i pass tokens from previous session: '(Add Mul (Num 2) (Ref 1) Add (Ref 2)) i receive
+an error because i forgot to add another number in the end for the addition operation. 
+
+When i pass fixed list of tokens:'(Add Mul (Num 2) (Ref 1) Add (Ref 2) (Num 1)). 
+I get: (Add (Mul (Num 2) (Ref 1)) (Add (Ref 2) (Num 1))), which indeed corresponds to "2 ∗ $1 + $2 + 1" or "+ * 2$ 1 + $2 1" 
+
