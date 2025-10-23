@@ -95,3 +95,12 @@ Now this function produces tokens to be passed to the parser (next session):
 For this session i plan to implement pare-expr in its fullest. I am still not sure how exactly to implement it because recently i was 
 pointed to the fact that parser use parse trees for evaluation. Now i am confused, i thought racket, as functional language, would take this
 part of me because of the way functions are applied.  
+
+## 9:12 PM
+
+So, apparently, i dont need to write fullblown parse trees. Parse logic can be implemented with recursions. For example, if i have '(Num n),
+it will be just (Num n). The same logic applies to '(Ref n). However, when we have any of four operators 'Add, 'Neg, 'Mul, 'Div, i need also
+to search for its left and right "argument". So when i find one of those, i need to run another parse call without current token. It will 
+not be a problem if we have something like '(Add Mul (Num 2) (Ref 1) Add (Ref 2) (Num 1)), two operators in the row, because we will simply
+run another recursion for next operator--'Mul. After last recursive call it will return to the first operator 'Add, forming nice, structured
+format. 
