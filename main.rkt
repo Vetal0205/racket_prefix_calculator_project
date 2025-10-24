@@ -247,8 +247,9 @@
     (when prompt? (display "> ") (flush-output))
     (let ([line (read-line)])
       (cond
-        [(string=? line "quit") (exit 0)]
-        [(string=? line "p") (print-history h) (loop h)] ;; temporary solution
+        [(eof-object? line) (void)]
+        [(string=? (string-trim line) "quit") (exit 0)]
+        [(string=? (string-trim line) "p") (print-history h) (loop h)] ;; temporary solution
         [else (loop (process-line line h))])
       ))))
 
