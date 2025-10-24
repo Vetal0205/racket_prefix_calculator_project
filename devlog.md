@@ -129,3 +129,7 @@ but further refinement is needed. Next step is custom error structures.
 
 Added custom error structure calc-error, and substituted (error "...") calls with it. Now i have error handling with customized output.
 Everything else, that was not covered by this structure (like hardware errors), i catched using exn:fail structure in with-handlers function. 
+
+## 5:49 PM
+
+Added print-history function. It prints current history using following pattern: id:value.
