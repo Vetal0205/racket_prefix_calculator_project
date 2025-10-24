@@ -165,9 +165,9 @@
 (define (update-history hist value)
   (let ([hst
          (if (>= (length hist) MAX-HIST-SIZE)
-               (cdr hist)   ; drop first (oldest)
+               (reverse (cdr (reverse hist)))   ; drop first (oldest)
                hist)])
-    (append hst (list value))))
+    (cons value hst)))
 
 ;; Evaluates epxpression written as AST
 (define (eval-expr ast hist)
