@@ -124,3 +124,8 @@ look like, whether it should be just results or results alongside history id. If
 
 Implemented eval-expr and altered process-line function to update history after evaluation. At this moment, all functionality is complete,
 but further refinement is needed. Next step is custom error structures.
+
+## 5:37 PM
+
+Added custom error structure calc-error, and substituted (error "...") calls with it. Now i have error handling with customized output.
+Everything else, that was not covered by this structure (like hardware errors), i catched using exn:fail structure in with-handlers function. 
