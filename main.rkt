@@ -34,7 +34,7 @@
     [(div? op)  'Div]))
 
 (define (make-number buf)
-  `(Num ,(string->number (list->string (reverse buf)))))
+  `(Num , (real->double-flonum (string->number (list->string (reverse buf))))))
 
 (define (keep-while-loop predicate lst)
   (if (and (pair? lst) (predicate (car lst)))
