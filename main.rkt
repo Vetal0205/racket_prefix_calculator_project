@@ -231,6 +231,15 @@
        [(string=? (vector-ref args 0) "--batch") #f]
        [else #t])))
 
+(define (print-history hist)
+  (if (null? hist)
+      (displayln "History is empty")
+      (let iter ([lst hist] [idx 1])
+        (displayln (format "~a: ~a" idx (car lst)))
+        (if (null? (cdr lst))
+            (void)
+            (iter (cdr lst) (+ idx 1))))))
+
 ;; Only for interactive mode
 (define (run-loop hist)
   (begin
@@ -239,7 +248,7 @@
     (let ([line (read-line)])
       (cond
         [(string=? line "quit") (exit 0)]
-        [(string=? line "p") (displayln h) (loop h)] ;; temporary solution
+        [(string=? line "p") (print-history h) (loop h)] ;; temporary solution
         [else (loop (process-line line h))])
       ))))
 
