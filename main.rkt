@@ -20,6 +20,7 @@
 (define (mul? c) (char=? c #\*))
 (define (div? c) (char=? c #\/))
 (define (ref? c) (char=? c #\$))
+(define MAX-HIST-SIZE 10)
 
 (define (make-operator op)
   (cond
@@ -149,16 +150,37 @@
         ast
         (error "Extra tokens"))))
 
-;; Evaluates epxpression written as AST
-(define (eval-expr ast hist) (error "unimp"))
+(define (update-history hist value)
+  (let ([hst
+         (if (>= (length hist) MAX-HIST-SIZE)
+               (cdr hist)   ; drop first (oldest)
+               hist)])
+    (append hst (list value))))
 
+;; Evaluates epxpression written as AST
+(define (eval-expr ast hist)
+ (match ast
+    [(Num n) n]
+    [(Ref k)
+     (let ([i (- k 1)])
+       (if (and (integer? i) (>= i 0) (< i (length hist)))
+           (list-ref hist i)
+           (error "invalid history reference" k)))]
+    [(Neg e1) (- (eval-expr e1 hist))]
+    [(Add l r) (+ (eval-expr l hist)
+                  (eval-expr r hist))]
+    [(Mul l r) (* (eval-expr l hist)
+                  (eval-expr r hist))]
+    [(Div l r) (/ (eval-expr l hist)
+                  (eval-expr r hist))]))
 
 ;; will do all heavy stuff tokenize→parse→eval→print→update history
 (define (process-line line hist)
   (let* ([tokens (tokenizer (string->list line))]
-         [ast (parse-expr tokens)]
-         [value (eval-expr ast hist)])
-    (cons value hist))) 
+         [ast (parse-top tokens)]
+         [value (eval-expr ast hist)]
+         [new-hist (update-history hist value)])
+    new-hist)) 
 
 (define prompt?
    (let [(args (current-command-line-arguments))]
@@ -181,9 +203,9 @@
         [else (loop (process-line line h))])
       ))))
 
-;(module+ main
-  ;(when prompt?
-  ;  (displayln "Ente an expression or command: "))
- ; (run-loop '()))
+(module+ main
+  (when prompt?
+    (displayln "Ente an expression or command: "))
+  (run-loop '()))
 
 
