@@ -119,3 +119,8 @@ This is the last session for this project. I plan to implement eval-expr functio
 output from tokenizer and try to run it, if successfull i will update history, if not raise an error. I am stil thinking how hist should 
 look like, whether it should be just results or results alongside history id. If i have time, i will also write tests to be run using 
 "-t" or "--test" option. 
+
+## 4:51 PM
+
+Implemented eval-expr and altered process-line function to update history after evaluation. At this moment, all functionality is complete,
+but further refinement is needed. Next step is custom error structures.
