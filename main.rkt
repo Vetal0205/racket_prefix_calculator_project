@@ -11,6 +11,10 @@
 (struct Mul (left right) #:transparent)  ; *
 (struct Div (left right) #:transparent)  ; /
 
+;; Error structure
+
+(struct calc-error exn:fail (context) #:transparent)
+
 ;; Helpers for tokenizer
 
 (define (digit? c) (char-numeric? c))
@@ -27,8 +31,7 @@
     [(plus? op) 'Add]
     [(minus? op) 'Neg]
     [(mul? op)  'Mul]
-    [(div? op)  'Div]
-    [else (error "invalid operator" op)])) ;; subject to change in the future
+    [(div? op)  'Div]))
 
 (define (make-number buf)
   `(Num ,(string->number (list->string (reverse buf)))))
@@ -47,7 +50,9 @@
   (let* ([digits (keep-while-loop digit? rest)]
          [remain (drop-while-loop digit? rest)])
     (if (null? digits)
-        (error "reference '$' requires numeric index") ;; subject to change
+        (raise (calc-error
+                (format "History refrence must be followed by ID, got: ~a" digits)
+                (current-continuation-marks) 'parse-ref)) 
         (values `(Ref ,(string->number (list->string digits))) remain))))
 
 ;; Top-level functions
@@ -89,14 +94,20 @@
                    (cons token
                          (cons (make-number buf) out)))))]
 
-      [else (error "unknown character" (car ln))])))
+      [else (raise (calc-error
+                    (format "Unknown token: ~a" (car ln))
+                    (current-continuation-marks)
+                    'tokenizer))])))
 
 ;; Builds data nodes, groups them depending on op
 (define (parse-expr toks)
   (let parse ([ts toks])
     (cond
       [(null? ts)
-       (error "Invalid Expression")]
+       (raise (calc-error
+               "Incomplete expression : missing operand(s) for operator" 
+               (current-continuation-marks)
+               'parser-expr))]
 
       ;; literal number
       ;; Represented by a list like '(Num n)
@@ -139,16 +150,17 @@
       [(eq? (car ts) 'Div)
        (let*-values ([(left rest1) (parse (cdr ts))]
                     [(right rest2) (parse rest1)])
-         (values (Div left right) rest2))]
-
-      [else (error "Unknown token" (car ts))])))
+         (values (Div left right) rest2))])))
 
 ;; wrapper, checks for exrtra tokens
 (define (parse-top toks)
   (let-values ([(ast rest) (parse-expr toks)])
     (if (null? rest)
         ast
-        (error "Extra tokens"))))
+        (raise (calc-error
+         (format "Extra tokens after complete expression: ~a" rest)
+         (current-continuation-marks)
+         'parser-top)))))
 
 (define (update-history hist value)
   (let ([hst
@@ -165,22 +177,51 @@
      (let ([i (- k 1)])
        (if (and (integer? i) (>= i 0) (< i (length hist)))
            (list-ref hist i)
-           (error "invalid history reference" k)))]
+           (raise (calc-error
+                   (format "Invalid history reference: $~a (no value stored at this index)" k)
+                   (current-continuation-marks)
+                   'eval-expr))))]
     [(Neg e1) (- (eval-expr e1 hist))]
     [(Add l r) (+ (eval-expr l hist)
                   (eval-expr r hist))]
     [(Mul l r) (* (eval-expr l hist)
                   (eval-expr r hist))]
-    [(Div l r) (/ (eval-expr l hist)
-                  (eval-expr r hist))]))
+    [(Div l r)
+     (let ([lv (eval-expr l hist)]
+           [rv (eval-expr r hist)])
+       (if (zero? rv)
+           (raise (calc-error
+                   "Division by zero"
+                   (current-continuation-marks)
+                   'eval-expr))
+           (/ lv rv)))]))
 
 ;; will do all heavy stuff tokenize→parse→eval→print→update history
 (define (process-line line hist)
-  (let* ([tokens (tokenizer (string->list line))]
-         [ast (parse-top tokens)]
-         [value (eval-expr ast hist)]
-         [new-hist (update-history hist value)])
-    new-hist)) 
+   (with-handlers ([calc-error?
+                   (lambda (except)
+                     (displayln
+                      (format "[~a] ~a"
+                              (calc-error-context except)
+                              (exn-message except)))
+                     hist)]
+                  [exn:fail?
+                   (lambda (except)
+                     (displayln
+                      (format "[internal] ~a"
+                              (exn-message except)))
+                     hist)])
+  (if (or (string=? (string-trim line) "")
+        (null? (string->list (string-trim line))))
+      (raise (calc-error
+                 "Empty input: no expression provided"
+                 (current-continuation-marks)
+                 'process-line))
+      (let* ([tokens (tokenizer (string->list line))]
+             [ast (parse-top tokens)]
+             [value (eval-expr ast hist)]
+             [new-hist (update-history hist value)])
+        new-hist))))
 
 (define prompt?
    (let [(args (current-command-line-arguments))]
@@ -197,7 +238,6 @@
     (when prompt? (display "> ") (flush-output))
     (let ([line (read-line)])
       (cond
-        [(eof-object? line) (displayln "Error: invalid input")]
         [(string=? line "quit") (exit 0)]
         [(string=? line "p") (displayln h) (loop h)] ;; temporary solution
         [else (loop (process-line line h))])
