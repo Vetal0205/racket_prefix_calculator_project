@@ -113,3 +113,9 @@ an error because i forgot to add another number in the end for the addition oper
 When i pass fixed list of tokens:'(Add Mul (Num 2) (Ref 1) Add (Ref 2) (Num 1)). 
 I get: (Add (Mul (Num 2) (Ref 1)) (Add (Ref 2) (Num 1))), which indeed corresponds to "2 ∗ $1 + $2 + 1" or "+ * 2$ 1 + $2 1" 
 
+# October 24 3:40 PM
+
+This is the last session for this project. I plan to implement eval-expr function and custom error handling. To do the first, i will take
+output from tokenizer and try to run it, if successfull i will update history, if not raise an error. I am stil thinking how hist should 
+look like, whether it should be just results or results alongside history id. If i have time, i will also write tests to be run using 
+"-t" or "--test" option. 
