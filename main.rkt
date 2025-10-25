@@ -250,8 +250,13 @@
         [(eof-object? line) (void)]
         [(string=? (string-trim line) "quit") (exit 0)]
         [(string=? (string-trim line) "p") (print-history h) (loop h)] ;; temporary solution
-        [else (loop (process-line line h))])
-      ))))
+        [else
+         (let* ([new-h (process-line line h)]
+                [val (car new-h)])   ; newest value stored at front
+           (unless prompt?           ; only print in batch mode
+             (displayln val))
+           (loop new-h))]
+        )))))
 
 (module+ main
   (when prompt?
