@@ -224,17 +224,14 @@
   ;; Error handling part. Handles errors raised by calc-error and exn:fail predicates.
    (with-handlers ([calc-error?
                    (lambda (except)
-                     (displayln
-                      (format "[~a] ~a"
-                              (calc-error-context except)
-                              (exn-message except)))
-                     hist)]
+                     (values hist (format "[~a] ~a"
+                                          (calc-error-context except)
+                                          (exn-message except))))]
                   [exn:fail?
                    (lambda (except)
-                     (displayln
-                      (format "[internal] ~a"
-                              (exn-message except)))
-                     hist)])
+                     (values hist (format "[~a] ~a"
+                                          (calc-error-context except)
+                                          (exn-message except))))])
      ;; if string is empty.
   (if (or (string=? (string-trim line) "")
         (null? (string->list (string-trim line))))
@@ -247,7 +244,8 @@
              [ast (parse-top tokens)]
              [value (eval-expr ast hist)]
              [new-hist (update-history hist value)])
-        new-hist))))
+        ;; Returns updated history and error status, here #f means no error.
+        (values new-hist #f)))))
 
 (define prompt?
    (let [(args (current-command-line-arguments))]
@@ -281,12 +279,16 @@
         [else
          ;; val pulls newly added record stored inside history array.
          ;; is used to print intermidiate values in --batch mode.
-         (let* ([new-h (process-line line h)]
-                [val (car new-h)])
-           (unless prompt? 
-             (displayln val))
-           (loop new-h))]
-        )))))
+         (let-values ([(new-h err-msg) (process-line line h)])
+           ;; if there was an error, print it here,
+           (when err-msg (displayln err-msg))
+           ;; if in batch mode and no error.
+           ;; print the new value that was just pushed to history,
+           (when (and (not prompt?)
+                      (not err-msg))
+             (displayln (car new-h)))
+           ;; continue loop with updated history,
+           (loop new-h))])))))
 
 (module+ main
   (when prompt?
