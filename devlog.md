@@ -133,3 +133,25 @@ Everything else, that was not covered by this structure (like hardware errors), 
 ## 5:49 PM
 
 Added print-history function. It prints current history using following pattern: id:value.
+
+## 8:44 PM
+
+Project is ready to submit. 
+
+Since my last entry, i fixed --batch mode in console, it was behaving differently from interactive mode in Dr. 
+racket. When i was trying to print "p" it treated it as token, not as command, and threw an error. The problem resolved when i used 
+string-trim function on raw input. It appears that console adds invisible characters appanded to the string, new line can be a cause of 
+mismatch. Also i changed the way result is outputed when program run in --batch mode: now it ouputs intermediate result for each expressiong 
+on new line along adding it the history array; to be used for testing purposes.
+
+Noticed critical error in my code. The process-line fucntion were printing to the console using displayln function, which violates
+functional core concept. Resolved problem by returting error message along updated history to the run-loop function, where it is printed to
+the user. If no errors encountered, process-line returns (hist #f); if i used #t it would print #t after each expression, using #f was 
+simpliest and fastest way to resolve this issue.
+
+After that i noticed that my numbers are in wrong format, then i converted them to float using real->double-flonum. History now in revesed 
+order, as instructed. Now new entries added to the begining, when program reaches the history length limit, it deletes last record 
+and shifts to the right. Added comments to each function. Created and pushed README.md file.
+
+
+
